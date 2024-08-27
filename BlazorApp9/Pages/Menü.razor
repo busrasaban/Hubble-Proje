@@ -1,0 +1,195 @@
+﻿@page "/menu"
+@inject HttpClient Http
+@implements IDisposable
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+<div class="background"></div>
+
+<link href="css/menuSlider.css" rel="stylesheet" />
+<script src="js/site.js" defer></script>
+
+<div class="top-bar">
+    <span>test</span>
+    <span id="icon2" style="z-index:1;color: white; font-size: 25px;" class="fa-solid fa-clock"></span>
+    <span>@DateTime.Now.ToString("HH:mm")</span>
+
+    <span>@DateTime.Now.ToString("dd.MM.yyyy")</span>
+    <span id="icon" style="z-index:1;color:#d29a4b; font-size: 60px;" class="@WeatherIcon"></span>
+    <span class="weather">@WeatherInfo</span>
+</div>
+
+<div class="s1">
+    <h2 style="font-size: 75px;">HOŞGELDİNİZ!</h2>
+</div>
+
+<div class="menu-container">
+    @foreach (var menu in VisibleMenus)
+    {
+        <div class="menu @(menu == SelectedMenu ? "selected" : "")"
+             id="@menu.Id"
+             @onclick="() => SelectMenu(menu)"
+             style="color: white;">
+
+            <i class="@menu.IconClass" style="color: white; font-size: 80px;"></i>
+            <span style="font-size: 24px; color: white;">@menu.Name</span>
+        </div>
+    }
+</div>
+
+<button class="right-arrow" @onclick="MoveNext">&#10095;</button>
+
+<script>
+    function initializeKeyListener(dotNetHelper) {
+        window.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                dotNetHelper.invokeMethodAsync('MoveNext');
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                dotNetHelper.invokeMethodAsync('SelectMenu');
+            }
+        });
+    }
+</script>
+
+@code {
+    private List<MenuItem> Menus = new List<MenuItem>
+    {
+        new MenuItem { Id = "menu1", Name = "Menu 1", IconClass = "fa-brands fa-pix" },
+        new MenuItem { Id = "menu2", Name = "Menu 2", IconClass = "fa-solid fa-desktop" },
+        new MenuItem { Id = "menu3", Name = "Menu 3", IconClass = "fa-solid fa-children" },
+        new MenuItem { Id = "menu4", Name = "Menu 4", IconClass = "fa-solid fa-earth-asia" },
+        new MenuItem { Id = "menu5", Name = "Menu 5", IconClass = "fa-solid fa-democrat" },
+        new MenuItem { Id = "menu6", Name = "Menu 6", IconClass = "fa-solid fa-clapperboard" },
+        new MenuItem { Id = "menu7", Name = "Menu 7", IconClass = "fa-solid fa-champagne-glasses" },
+        new MenuItem { Id = "menu8", Name = "Menu 8", IconClass = "fa-solid fa-mug-hot" },
+    };
+
+    private int StartIndex = 0;
+    private MenuItem SelectedMenu;
+    private string WeatherInfo { get; set; }
+    private string WeatherIcon { get; set; } = "fa-solid fa-cloud";
+    private Timer _timer;
+
+    private IEnumerable<MenuItem> VisibleMenus => Enumerable.Range(0, 5)
+        .Select(i => Menus[(StartIndex + i) % Menus.Count]);
+
+    protected override async Task OnInitializedAsync()
+    {
+        await FetchWeatherData();
+        _timer = new Timer(async _ => await FetchWeatherData(), null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JS.InvokeVoidAsync("initializeKeyListener", DotNetObjectReference.Create(this));
+            SelectedMenu = Menus.Last();
+        }
+    }
+
+    [JSInvokable]
+    public void MoveNext()
+    {
+        StartIndex = (StartIndex + 1) % Menus.Count;
+        SelectedMenu = Menus[(StartIndex + 4) % Menus.Count];
+        UpdateMenuDisplay();
+    }
+
+    [JSInvokable]
+    public void SelectMenu()
+    {
+        if (SelectedMenu != null)
+        {
+            ShowAlert(SelectedMenu.Id);
+        }
+    }
+
+    private void UpdateMenuDisplay()
+    {
+        StateHasChanged();
+    }
+
+    private void SelectMenu(MenuItem menu)
+    {
+        SelectedMenu = menu;
+        ShowAlert(menu.Id);
+        StateHasChanged();
+    }
+
+    private void ShowAlert(string menuId)
+    {
+        JS.InvokeVoidAsync("alert", $"Tıkladınız: {menuId}");
+    }
+
+    private async Task FetchWeatherData()
+    {
+        var apiKey = "40a1ceb7bd3237928b6a345928fcf326";
+        var city = "Tehran";
+        var url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&units=metric&appid={apiKey}";
+
+        try
+        {
+            var weatherResponse = await Http.GetFromJsonAsync<WeatherResponse>(url);
+
+            WeatherInfo = $"{weatherResponse.Name} {weatherResponse.Main.Temp.ToString("F1")}°C";
+            WeatherIcon = GetWeatherIcon(weatherResponse.Weather.FirstOrDefault()?.Main, DateTime.Now.Hour);
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Hava durumu verisi alınırken hata: {ex.Message}");
+        }
+    }
+
+    private string GetWeatherIcon(string weatherCondition, int currentHour)
+    {
+        bool isNight = currentHour >= 18 || currentHour < 6;
+
+        return weatherCondition switch
+        {
+            "Clear" => isNight ? "fa-solid fa-moon" : "fa-solid fa-sun",
+            "Clouds" => isNight ? "fa-solid fa-cloud-moon" : "fa-solid fa-cloud-sun",
+            "Rain" => "fa-solid fa-cloud-showers-heavy",
+            "Snow" => "fa-solid fa-snowflake",
+            "Thunderstorm" => "fa-solid fa-bolt",
+            "Drizzle" => "fa-solid fa-cloud-rain",
+            "Fog" => "fa-solid fa-smog",
+            _ => "fa-solid fa-cloud"
+        };
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+    [Inject] IJSRuntime JS { get; set; }
+
+    public class MenuItem
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string IconClass { get; set; }
+    }
+
+    public class WeatherResponse
+    {
+        public List<Weather> Weather { get; set; }
+        public Main Main { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class Weather
+    {
+        public string Main { get; set; }
+        public string Description { get; set; }
+    }
+
+    public class Main
+    {
+        public float Temp { get; set; }
+    }
+}

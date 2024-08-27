@@ -1,0 +1,27 @@
+﻿@page "/Sayfa3"
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<div class="background"></div>
+<div class="kutu">
+    <div class="hr-text">TEST</div>
+    <p id="yazı1">Please read the following licence agreement. Use the scroll bar to view the rest of this agreement.</p>
+    <div class="agreement-text">
+        <p><b>Lorem ipsum dolor sit amet consectetur. Nisi dignissim faucibus mattis convallis purus. Est sed massa facilisi sit tempus. Venenatis elementum risus fames porta lectus malesuada. Justo venenatis pretium justo quis. Mollis vel et et dignissim sagittis gravida. Ac et libero ac mattis tellus feugiat ullamcorper velit. Vivamus sociis fusce elementum nisl proin tincidunt netus. Vitae magna proin adipiscing pellentesque odio. At dolor nulla placerat amet a odio morbi adipiscing augue. Varius parturient nam pretium urna nec. Turpis. Ac et libero ac mattis tellus feugiat ullamcorper velit. Vivamus sociis fusce elementum nisl proin tincidunt netus. Vitae magna proin adipiscing pellentesque odio. At dolor nulla placerat amet a odio morbi adipiscing augue. Varius parturient nam pretium urna nec. Turpis.Lorem ipsum dolor sit amet consectetur. Nisi dignissim faucibus mattis convallis purus. Est sed massa facilisi sit tempus. Venenatis elementum risus fames porta lectus malesuada. Justo venenatis pretium justo quis.Est sed massa facilisi sit tempus. Venenatis elementum risus fames porta lectus malesuada. Justo venenatis pretium justo quis.</b></p>
+    </div>
+    <div class="buttons">
+        <button id="button2" >No</button>
+        <button id="button1" @onclick="AgreeClick">I agree</button>
+    </div>
+</div>
+
+@code {
+   
+
+    private async Task AgreeClick()
+    {
+       
+        Navigation.NavigateTo("/giris");
+    }
+  
+}

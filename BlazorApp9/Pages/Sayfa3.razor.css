@@ -1,0 +1,97 @@
+﻿
+
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('Arkaplan2.png');
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+}
+.kutu {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 704px; 
+    height: 409px; 
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+#yazı1 {
+    margin: 10px;
+    color: #828282;
+    font-size: 13px;
+    text-align: left;
+}
+
+.agreement-text {
+    max-height: 200px;
+    overflow-y: scroll;
+    text-align: left;
+    padding: 10px;
+    font-size: 11px;
+    
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    
+}
+
+#button1 {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #374151;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+#button2 {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #D1D5DB;
+    color: black;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left:75%;
+    
+    
+}
+ 
+.hr-text {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #000;
+    font-size: 18px;
+    margin: 20px 0;
+}
+
+    .hr-text::before,
+    .hr-text::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #E5E7EB;
+        
+    }
+
+    .hr-text:not(:empty)::before {
+        margin-right: 50px; 
+    }
+
+    .hr-text:not(:empty)::after {
+        margin-left: 50px;
+    }

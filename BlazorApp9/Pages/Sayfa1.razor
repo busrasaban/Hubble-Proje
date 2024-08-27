@@ -1,0 +1,39 @@
+﻿@page "/Sayfa1"
+@inject NavigationManager Navigation
+
+<div class="s1">
+    <div class="sidenav">
+        <div class="login-main-text">
+            <i class="fa-solid fa-house-chimney-window" style="margin-left:5%; margin-top:20px;"></i>
+            <h3><strong><b>Thanks to TEST!</b></strong></h3>
+            <p>Lorem ipsum dolor sit amet ar, onsectetur a adipisicing elit, sed do eiusmod tempor incidiconsectetur a adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+    </div>
+</div>
+    <div class="s2">
+        <div class="right">
+            <div class="right-side">
+                <div class="login-box">
+                    <h3 style="color: #233876; margin-bottom:30px;">Sign in to our platform</h3>
+                    <p>Please enter licence key.</p>
+                    <form @onsubmit="HandleSubmit">
+                        <label for="license-key">License Key</label>
+                        <div class="input-group">
+                            <span style="z-index:1;color: #6B7280" class="fa-solid fa-bookmark"></span>
+                            <input id="license-key" name="license-key" placeholder="xxxx-xxx-xxx-xx">
+                        </div>
+                        <button type="submit">Register</button>
+                    </form>
+                <p class="footer-text">© 2023, Made with by <a href="#" target="_blank">Technologies</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@code {
+    private void HandleSubmit()
+    {
+        Navigation.NavigateTo("/Sayfa2");
+    }
+}

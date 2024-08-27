@@ -1,0 +1,109 @@
+﻿@page "/Sayfa2"
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<div class="s1">
+    <div class="sidenav">
+        <div class="login-main-text">
+            <i class="fa-solid fa-house-chimney-window" style="margin-left:5%; margin-top:20px;"></i>
+            <h3><strong><b>Thanks to TEST!</b></strong></h3>
+            <p>Lorem ipsum dolor sit amet ar, onsectetur a adipisicing elit, sed do eiusmod tempor incidiconsectetur a adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        </div>
+    </div>
+</div>
+
+<div class="s2">
+    <div class="right">
+        <div class="right-side">
+            <div class="login-box">
+                <h3 style="color: #233876;">Create user</h3>
+                <p>Please create password for Administrator user.</p>
+                <form>
+                    <label for="admin-email">Administrator</label>
+                    <div class="input-group">
+                        <span style="z-index:1;color: #6B7280; position:absolute; margin-top:3%; margin-left:10px;" class="fa-solid fa-envelope"></span>
+                        <input type="email" id="admin-email" name="admin-email" placeholder="test@gmail.com">
+                    </div>
+
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <span class="fa-solid fa-lock" style="z-index:1;color: #6B7280; position:absolute; margin-top:3%; margin-left:10px;"></span>
+                        <input type="password" id="password" placeholder="••••••••••">
+                        <span class="toggle-password" onclick="togglePassword('password')">
+                            <span class="fa fa-eye"></span>
+                        </span>
+                    </div>
+
+                    <label for="confirmpassword">Confirm password</label>
+                    <div class="input-group">
+                        <span class="fa-solid fa-lock" style="z-index:1;color: #6B7280; position:absolute; margin-top:3%; margin-left:10px;"></span>
+                        <input type="password" id="confirmpassword" placeholder="••••••••••">
+                        <span class="toggle-password" onclick="togglePassword('confirmpassword')">
+                            <span class="fa fa-eye"></span>
+                        </span>
+                    </div>
+
+                    <div class="options">
+                        <label>
+                            <input type="checkbox"> Remember me
+                        </label>
+                        <a href="#" class="lost-password">Lost Password?</a>
+                    </div>
+
+                    <button type="button" @onclick="AgreeClick">Create account</button>
+                </form>
+                <p class="footer-text">© 2023, Made with by <a href="#" target="_blank">Technologies</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (ShowAlert)
+{
+    <div class="alert alert-success alert-dismissible fade show top-alert @(!ShowAlert ? "hide" : "")" role="alert">
+        <div class="alert-content">
+            <span class="fa-solid fa-circle-check" style="color: #046c4e;"></span>
+            <strong>Alert heading</strong><br />
+            You have successfully logged into the system!
+        </div>
+        <button type="button" class="btn-close" @onclick="CloseAlert" aria-label="Close"></button>
+    </div>
+}
+
+<script>
+    function togglePassword(id) {
+        var passwordInput = document.getElementById(id);
+        var toggleIcon = document.querySelector(`#${id} + .toggle-password span`);
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleIcon.classList.remove("fa-eye");
+            toggleIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            toggleIcon.classList.remove("fa-eye-slash");
+            toggleIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+
+@code {
+    private bool ShowAlert { get; set; } = false;
+
+    private async Task AgreeClick()
+    {
+        ShowAlert = true;
+        StateHasChanged();
+        await Task.Delay(5000);
+        ShowAlert = false;
+        StateHasChanged();
+        Navigation.NavigateTo("/Sayfa3");
+    }
+
+    private void CloseAlert()
+    {
+        ShowAlert = false;
+        Navigation.NavigateTo("/Sayfa3");
+    }
+}
